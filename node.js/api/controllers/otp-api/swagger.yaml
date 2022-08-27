@@ -1,0 +1,75 @@
+paths:
+  /otp-register:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+
+  /otp-delete:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+
+  /otp-list:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+
+  /otp-generate:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+
+  /otp-get:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object

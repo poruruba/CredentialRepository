@@ -1,0 +1,75 @@
+paths:
+  /pwd-insert:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /pwd-update:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /pwd-delete:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /pwd-get:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /pwd-list:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"

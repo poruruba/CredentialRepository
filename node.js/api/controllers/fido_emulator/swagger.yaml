@@ -1,0 +1,88 @@
+paths:
+  /fido2-device-list:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /fido2-device-update:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /fido2-device-delete:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /device/u2f_register:
+    post:
+      security:
+        - apikeyAuth: []    
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /device/u2f_authenticate:
+    post:
+      security:
+        - apikeyAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"
+
+  /device/u2f_version:
+    post:
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: "#/definitions/CommonRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CommonResponse"

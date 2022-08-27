@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com 'unsafe-eval' 'unsafe-inline'; style-src * 'unsafe-inline'; media-src *; img-src * data: content: blob:;">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="css/start.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spinkit/2.0.1/spinkit.min.css" />
+  <script src="js/methods_bootstrap.js"></script>
+  <script src="js/components_bootstrap.js"></script>
+  <script src="js/components_utils.js"></script>
+  <script src="js/vue_utils.js"></script>
+  <script src="js/gql_utils.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/vconsole/dist/vconsole.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+
+  <!-- <script src="dist/js/jsQR.js" async></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.webmanifest" />
+  <script async src="https://cdn.jsdelivr.net/npm/pwacompat" crossorigin="anonymous"></script>
+
+  <title>Password/OTP/FIDO Credentials</title>
+</head>
+<body>
+<!--
+    <div id="loader-background">
+      <div class="sk-plane sk-center"></div>
+    </div>
+-->
+    <div id="top" class="container">
+      <button class="btn btn-default btn-sm pull-right" v-on:click="input_apikey">ApiKey</button>
+      <div class="jumbotron">
+        <h2>Password/OTP/FIDO Credentials</h2>
+      </div>
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#password" data-toggle="tab">Password</a></li>
+        <li><a href="#otp" data-toggle="tab">OTP</a></li>
+        <li><a href="#fido" data-toggle="tab">FIDO</a></li>
+      </ul>
+
+      <div class="tab-content">
+
+        <div id="password" class="tab-pane fade in active">
+          <br>
+          <button class="btn btn-default pull-right" v-on:click="password_insert_dialog_show">新規追加</button>
+
+          <table class="table table-striped">
+            <thead><tr>
+              <th>Copy/Open</th>
+              <th>Name</th>
+              <th>参照/変更/削除</th>
+            </tr></thead>
+            <tbody>
+              <tr v-for="(value, index) in pwd_list">
+                <td>
+                  <button class="btn btn-default btn-sm glyphicon glyphicon-paperclip" v-on:click="password_clipboard_get_copy(index)"></button>
+                  <a class="btn btn-default btn-sm glyphicon glyphicon-globe" v-bind:href="value.url" target="_blank" rel="noopener noreferrer"></a>
+                  <button class="btn btn-default btn-sm glyphicon glyphicon-qrcode" v-on:click="password_qrcode_dialog_show(index)"></button>
+                </td>
+                <td><a v-on:click="password_display_dialog_show(index)"><strong>{{value.name}}</strong></a></td>
+                <td>
+                  <button class="btn btn-default btn-sm" v-on:click="password_display_dialog_show(index)">参照</button>
+                  <button class="btn btn-primary btn-sm" v-on:click="password_update_dialog_show(index)">変更</button>
+                  <button class="btn btn-primary btn-sm" v-on:click="password_delete_call(index)">削除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="otp" class="tab-pane fade in">
+          <br>
+          <button class="btn btn-default pull-right" v-on:click="otp_qrcode_scan_start">QRコードスキャン</button>
+          <button class="btn btn-default pull-right" v-on:click="otp_qrcode_paste_start">QRコード貼り付け</button>
+          <table class="table table-striped">
+            <thead>
+              <tr><th>issuer</th><th>account_name</th><th>method</th><th>created_at</th><th>action</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in otp_list">
+                <td><a v-on:click="otp_generate(index)">{{item.issuer}}</a></td><td><a v-on:click="otp_generate(index)">{{item.account_name}}</a></td><td>{{item.method}}</td><td>{{toDatetimeString(item.created_at)}}</td>
+                <td><button class="btn btn-default btn-sm glyphicon glyphicon-qrcode" v-on:click="otp_export(index)"></button><button class="btn btn-primary btn-sm" v-on:click="otp_delete(index)">削除</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="fido" class="tab-pane fade in">
+          <br>
+          <label>issuer</label> {{fido_issuer}}
+          <table class="table table-striped">
+            <thead>
+              <tr><th>key_id</th><th>name</th><th>counter</th><th>lastauthed_at</th><th>created_at</th><th>action</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in fido_list">
+                <td>{{item.key_id}}</td><td>{{item.name}}</td><td>{{item.counter}}</td><td>{{toDatetimeString(item.lastauthed_at)}}</td><td>{{toDatetimeString(item.created_at)}}</td>
+                <td><button class="btn btn-primary btn-sm" v-on:click="fido_edit(index)">変更</button><button class="btn btn-primary btn-sm" v-on:click="fido_delete(index)">削除</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+
+      <modal-dialog id="dialog_qrcode_scan" size="lg">
+        <div slot="content">
+          <div class="modal-header">
+              OTP登録
+          </div>
+          <div class="modal-body">
+            <div v-show="otp_url==null">
+              <button class="btn btn-default btn-sm pull-right" v-on:click="qrcode_paste_start">QRコード貼り付け</button>
+              <p>QRコードをスキャンしてください。</p>
+              <canvas class="btn-block center-block" id="qrcode_canvas"></canvas>
+            </div>
+            <div v-show="otp_url!=null">
+              <div v-if="otp_url==''">
+                <button class="btn btn-default btn-sm pull-right" v-on:click="qrcode_scan_start">QRコードスキャン</button>
+                <textarea placeholder="ここに画像かテキストをペースト(Ctrl-V)してください。" class="form-control" style="text-align: center; resize: none;" rows="5" 
+                          v-on:paste="otp_text_paste" v-on:drop.prevent="otp_file_drop" v-on:dragover.prevent readonly>
+                </textarea>
+              </div>
+              <div v-else class="form-inline">
+                <button class="btn btn-default btn-sm pull-right" v-on:click="qrcode_scan_start">QRコードスキャン</button>
+                <button class="btn btn-default btn-sm pull-right" v-on:click="qrcode_paste_start">QRコード貼り付け</button>
+                <br>
+                <label>account_name</label> {{otp_item.account_name}}<br>
+                <label>secret</label> {{otp_item.secret}}<br>
+                <label>issuer</label> {{otp_item.issuer}}<br>
+                <label>method</label> {{otp_item.method}}<br>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button v-if="otp_url!=null && otp_url!=''" class="btn btn-default" v-on:click="otp_register">登録</button>
+            <button class="btn btn-default" v-on:click="otp_qrcode_register_dialog_close">閉じる</button>
+          </div>
+        </div>
+      </modal-dialog>
+
+      <modal-dialog id="dialog_code_display">
+        <div slot="content">
+          <div class="modal-header">
+              OTPコード
+          </div>
+          <div class="modal-body">
+            <h3><button class="btn btn-default btn-sm glyphicon glyphicon-paperclip" v-on:click="otp_generate_copy(otp_code)"></button> {{otp_code}}</h3>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" v-on:click="dialog_close('#dialog_code_display')">閉じる</button>
+          </div>
+        </div>
+      </modal-dialog>
+
+      <modal-dialog id="dialog_password_insert" size="lg">
+        <div slot="content">
+          <div class="modal-header">
+            <h4>パスワードの追加</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>name</label> <input type="text" class="form-control" v-model="pwd_insert.name">
+            </div>
+            <div class="form-group">
+              <label>url</label> <input type="text" class="form-control" v-model="pwd_insert.url">
+            </div>
+            <div class="form-group">
+              <label>userid</label> <input type="text" class="form-control" v-model="pwd_insert.userid">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-default btn-sm glyphicon glyphicon-paperclip" v-on:click="password_clipboard_copy(pwd_insert.password)"></button>
+              <label>password</label> <input type="text" class="form-control" v-model="pwd_insert.password">
+            </div>
+            <button class="btn btn-default btn-sm" v-on:click="password_create">パスワード自動生成</button><br>
+            <input v-model="chk_upper" id="chk_upper" type="checkbox" class="form-inline">
+            <label for="chk_upper">大文字含む</label>
+            <input v-model="chk_number" id="chk_number" type="checkbox" class="form-inline">
+            <label for="chk_number">数字含む</label><br>
+            <input type="checkbox" v-model="chk_exception" id="chk_exception">
+            <label for="chk_exception">IとlとOを除く(大文字のアイと小文字のエルと大文字のオー)</label><br>
+            <input v-model="chk_special" id="chk_special" type="checkbox" class="form-inline">
+            <label for="chk_special">特殊文字含む</label>
+            <span class="form-inline">
+              <select class="form-control" v-model="chk_special_pattern">
+                <option value="-+*/_">-+*/_</option>
+                <option value="=-+*/;,._">=-+*/;,._</option>
+                <option value="@#$%&?!">@#$%&?!</option>
+                <option value="!@#$%^&*()_+-=[]{}|">!@#$%^&*()_+-=[]{}|</option>
+                <option value="!#$%&()=-\@+*/?'^~|`;,._[]{}">!#$%&()=-\@+*/?'^~|`;,._[]{}</option>
+              </select>
+            </span>
+            <br>
+            <div class="form-group">
+              <label>description</label> <textarea class="form-control" v-model="pwd_insert.description" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" v-on:click="password_insert_call">作成</button>
+            <button class="btn btn-default" v-on:click="dialog_close('#dialog_password_insert')">キャンセル</button>
+          </div>
+        </div>
+      </modal-dialog>
+  
+      <modal-dialog id="dialog_password_update" size="lg">
+        <div slot="content">
+          <div class="modal-header">
+            <h4>パスワードの変更</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>name</label> <input type="text" class="form-control" v-model="pwd_update.name">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-default btn-sm clip_btn glyphicon glyphicon-paperclip" v-on:click="clipboard_copy(pwd_update.url)"></button>
+              <button class="btn btn-default btn-sm clip_btn glyphicon glyphicon-globe" v-on:click="show_newpage(pwd_update.url)"></button>
+            <label>url</label><input type="text" class="form-control" v-model="pwd_update.url">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-default btn-sm glyphicon glyphicon-paperclip" v-on:click="clipboard_copy(pwd_update.userid)"></button>
+              <label>userid</label><input type="text" class="form-control" v-model="pwd_update.userid">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-default btn-sm glyphicon glyphicon-paperclip" v-on:click="clipboard_copy(pwd_update.password)"></button>
+              <label>password</label> <input type="text" class="form-control" v-model="pwd_update.password">
+            </div>
+            <button class="btn btn-default btn-sm" v-on:click="password_create">パスワード自動生成</button><br>
+            <input v-model="chk_upper" id="chk_upper" type="checkbox" class="form-inline">
+            <label for="chk_upper">大文字含む</label>
+            <input v-model="chk_number" id="chk_number" type="checkbox" class="form-inline">
+            <label for="chk_number">数字含む</label><br>
+            <input type="checkbox" v-model="chk_exception" id="chk_exception">
+            <label for="chk_exception">IとlとOを除く(大文字のアイと小文字のエルと大文字のオー)</label><br>
+            <input v-model="chk_special" id="chk_special" type="checkbox" class="form-inline">
+            <label for="chk_special">特殊文字含む</label>
+            <span class="form-inline">
+              <select class="form-control" v-model="chk_special_pattern">
+                <option value="-+*/_">-+*/_</option>
+                <option value="=-+*/;,._">=-+*/;,._</option>
+                <option value="@#$%&?!">@#$%&?!</option>
+                <option value="!@#$%^&*()_+-=[]{}|">!@#$%^&*()_+-=[]{}|</option>
+                <option value="!#$%&()=-\@+*/?'^~|`;,._[]{}">!#$%&()=-\@+*/?'^~|`;,._[]{}</option>
+              </select>
+            </span>
+            <br>
+            <div class="form-group">
+              <label>description</label> <textarea class="form-control" v-model="pwd_update.description" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" v-on:click="password_update_call">変更</button>
+            <button class="btn btn-default" v-on:click="dialog_close('#dialog_password_update')">キャンセル</button>
+          </div>
+        </div>
+      </modal-dialog>    
+  
+      <modal-dialog id="dialog_password_get" size="lg">
+        <div slot="content">
+          <div class="modal-header">
+            <h4>パスワードの表示</h4>
+          </div>
+          <div class="modal-body">
+            <span v-if="pwd_get">
+              <div class="form-group">
+                <label>name</label> <input type="text" class="form-control" v-model="pwd_get.name" readonly>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-default btn-sm clip_btn glyphicon glyphicon-paperclip" v-on:click="clipboard_copy(pwd_get.url)"></button>
+                <button class="btn btn-default btn-sm clip_btn glyphicon glyphicon-globe" v-on:click="show_newpage(pwd_get.url)"></button>
+                <label>url</label><input type="text" class="form-control" v-model="pwd_get.url" readonly>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-default btn-sm clip_btn glyphicon glyphicon-paperclip" v-on:click="clipboard_copy(pwd_get.userid)"></button>
+                <label>userid</label> <input type="text" class="form-control" v-model="pwd_get.userid" readonly>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-default btn-sm clip_btn glyphicon glyphicon-paperclip" v-on:click="clipboard_copy(pwd_get.password)"></button>
+                <label>password</label> <input type="text" class="form-control" v-model="pwd_get.password" readonly>
+              </div>
+              <div class="form-group">
+                <label>description</label> <textarea class="form-control" v-model="pwd_get.description" rows="3" readonly></textarea>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" v-on:click="dialog_close('#dialog_password_get')">閉じる</button>
+          </div>
+        </div>
+      </modal-dialog>
+  
+      <modal-dialog id="dialog_password_qrcode">
+        <div slot="content">
+          <div class="modal-header">
+            <h4>QRコードの表示</h4>
+          </div>
+          <div class="modal-body">
+            <center><div id="password_qrcode_area"></div></center>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" v-on:click="dialog_close('#dialog_password_qrcode')">閉じる</button>
+          </div>
+        </div>
+      </modal-dialog>      
+
+
+      <!-- for progress-dialog -->
+      <progress-dialog v-bind:title="progress_title"></progress-dialog>
+    </div>
+
+    <script src="js/start.js"></script>
+</body>
