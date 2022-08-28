@@ -112,11 +112,11 @@ var vue_options = {
                 alert('失敗しました。');
             }
         },
-        otp_generate_copy: async function(code){
+        otp_generate_copy: function(code){
             this.clip_copy(code);
             this.toast_show("クリップボードにコピーしました。");
         },
-        otp_generate_get_copy: async function(index){
+        otp_generate_generate_copy: async function(index){
             try{
                 var result = await do_post_with_apikey(base_url + "/otp-generate", { uuid: this.otp_list[index].uuid }, this.apikey );
                 console.log(result);
