@@ -115,7 +115,17 @@ var vue_options = {
         otp_generate_copy: async function(code){
             this.clip_copy(code);
             this.toast_show("クリップボードにコピーしました。");
-        },        
+        },
+        otp_generate_get_copy: async function(index){
+            try{
+                var result = await do_post_with_apikey(base_url + "/otp-generate", { uuid: this.otp_list[index].uuid }, this.apikey );
+                console.log(result);
+                this.clip_copy(result.code);
+                this.toast_show("クリップボードにコピーしました。");
+            }catch(error){
+                alert('失敗しました。');
+            }
+        },
         otp_register: async function(){
             try{
                 var result = await do_post_with_apikey(base_url + "/otp-register", { url: this.otp_url }, this.apikey );
