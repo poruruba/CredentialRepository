@@ -97,10 +97,11 @@
           <button class="btn btn-default pull-right" v-on:click="otp_qrcode_paste_start">QRコード貼り付け</button>
           <table class="table table-striped">
             <thead>
-              <tr><th>issuer</th><th>account_name</th><th>method</th><th>created_at</th><th>action</th></tr>
+              <tr><th>Copy</th><th>issuer</th><th>account_name</th><th>method</th><th>created_at</th><th>action</th></tr>
             </thead>
             <tbody>
               <tr v-for="(item, index) in otp_list">
+                <td><button class="btn btn-default btn-sm glyphicon glyphicon-paperclip" v-on:click="otp_generate_get_copy(index)"></button></td>
                 <td><a v-on:click="otp_generate(index)">{{item.issuer}}</a></td><td><a v-on:click="otp_generate(index)">{{item.account_name}}</a></td><td>{{item.method}}</td><td>{{toDatetimeString(item.created_at)}}</td>
                 <td><button class="btn btn-default btn-sm glyphicon glyphicon-qrcode" v-on:click="otp_export(index)"></button><button class="btn btn-primary btn-sm" v-on:click="otp_delete(index)">削除</button></td>
               </tr>
