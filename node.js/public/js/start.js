@@ -502,6 +502,15 @@ var vue_options = {
     mounted: function(){
         proc_load();
 
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(async (registration) => {
+                registration.update();
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }).catch((err) => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        }
+	    
         this.apikey = localStorage.getItem(APIKEY_KEY);
         this.password_list_update();
         this.fido_update_list();
